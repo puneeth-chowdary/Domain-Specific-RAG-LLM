@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enhanced RAG Chat</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0e0e0e; /* Deep black */
+      font-family: "Inter", Arial, sans-serif;
+      color: #f2f2f2; /* Light white */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #chat {
+      width: 480px;
+      background: #111;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    #messages {
+      height: 380px;
+      overflow-y: auto;
+      padding-right: 10px;
+      border-radius: 10px;
+    }
+
+    .msg {
+      margin: 12px 0;
+      padding: 12px 15px;
+      border-radius: 12px;
+      max-width: 85%;
+      line-height: 1.4;
+      font-size: 15px;
+    }
+
+    .user {
+      background: #1f1f1f;
+      color: #a7c7ff;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .assistant {
+      background: #222;
+      color: #b7f7b7;
+      align-self: flex-start;
+    }
+
+    #input {
+      width: 75%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: #1c1c1c;
+      color: #fff;
+      font-size: 15px;
+      margin-top: 10px;
+    }
+
+    #input:focus {
+      box-shadow: 0 0 0 2px #444;
+    }
+
+    button {
+      width: 20%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #333;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      margin-left: 8px;
+    }
+
+    button:hover {
+      background: #444;
+    }
+
+    button:active {
+      background: #555;
+    }
+
+    /* Smooth scrolling */
+    #messages::-webkit-scrollbar {
+      width: 6px;
+    }
+    #messages::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="chat">
+  <h2>RAG Chat</h2>
+
+  <div id="messages"></div>
+
+  <div style="display: flex; align-items: center;">
+    <input type="text" id="input" placeholder="Type message...">
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+
+<script>
+function addMessage(role, text) {
+  const messages = document.getElementById("messages");
+  const div = document.createElement("div");
+  div.className = "msg " + role;
+  div.textContent = text;
+  messages.appendChild(div);
+
+  // Auto-scroll
+  messages.scrollTop = messages.scrollHeight;
+}
+
+async function send() {
+  const input = document.getElementById("input");
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+
+  addMessage("user", text);
+
+  const res = await fetch("/chat", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({message: text})
+  });
+
+  const data = await res.json();
+  addMessage("assistant", data.response);
+}
+</script>
+
+</body>
+</html>
