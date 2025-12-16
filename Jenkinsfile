@@ -34,12 +34,14 @@ pipeline {
                 """
             }
         }
-        stage('Lint (ruff)'){
-            sh"""
-                . venv/bin/activate
-                poetry run ruff check .
-                """
-        }
+        stage('Lint (ruff)') {
+    steps {
+        sh """
+            . venv/bin/activate
+            poetry run ruff check .
+        """
+    }
+}
 
         stage('Build Docker Image') {
             steps {
