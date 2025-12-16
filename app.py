@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session
 import uuid
 import os
-
-
 from example_usage import EnhancedRAGChat
 
 app = Flask(__name__)
